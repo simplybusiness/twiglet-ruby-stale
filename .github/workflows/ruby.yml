@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -26,8 +25,8 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
     - name: Install dependencies
       run: bundle install
-    - name: run rubocop
+    - name: Rubocop Check
       run: bundle exec rubocop
     - name: Run all tests
-      run: for file in test/*test.rb; do ruby $file; done
+      run: bundle exec ruby test/*
       shell: bash
