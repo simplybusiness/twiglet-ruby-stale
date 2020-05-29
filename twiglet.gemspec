@@ -7,6 +7,7 @@ Gem::Specification.new do |gem|
   # 'allowed_push_host' to allow pushing to a single host or delete this section
   # to allow pushing to any host.
   if gem.respond_to?(:metadata)
+    # TODO: need to change this to rubygems when we publish
     gem.metadata['allowed_push_host'] = 'https://gemstash.simplybusiness.io/private'
   else
     raise(
