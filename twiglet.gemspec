@@ -6,7 +6,7 @@ $LOAD_PATH.push File.expand_path('lib', __dir__)
 
 Gem::Specification.new do |gem|
   gem.name                  = 'twiglet'
-  gem.version               = VERSION
+  gem.version               = Twiglet::VERSION
   gem.authors               = ['Simply Business']
   gem.email                 = ['tech@simplybusiness.co.uk']
   gem.homepage              = 'https://github.com/simplybusiness/twiglet'
