@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require File.expand_path('lib/twiglet/version', __dir__)
 
 $LOAD_PATH.push File.expand_path('lib', __dir__)
