@@ -4,7 +4,7 @@ require_relative 'lib/twiglet/logger'
 
 PORT = 8080
 
-logger = Twiglet::Logger.new('petshop') # 'petshop' is the service name
+logger = Twiglet::Logger.new('petshop')
 
 # Start our petshop
 logger.info({
