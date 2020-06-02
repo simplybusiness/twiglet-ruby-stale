@@ -22,7 +22,7 @@ A hash can optionally be passed in as a keyword argument for `scoped_properties`
 
 You may also provide an optional `output` keyword argument which should be an object with a `puts` method - like `$stdout`.
 
-Lastly, you can provide another optional keyword argument called `now`, which should be a function returning a `Time` object.
+Lastly, you can provide another optional keyword argument called `now`, which should be a function returning a `Time` string in ISO8601 format.
 
 The defaults for both `output` and `now` should serve for most uses, though you may want to override them for testing as we have done [here](test/logger_test.rb).
 
