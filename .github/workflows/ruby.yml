@@ -28,5 +28,5 @@ jobs:
     - name: Rubocop Check
       run: bundle exec rubocop
     - name: Run all tests
-      run: bundle exec ruby test/*
+      run: bundle exec rake test
       shell: bash
