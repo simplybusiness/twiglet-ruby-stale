@@ -77,9 +77,8 @@ module Twiglet
           level: level
         }
       }
-      total_message = total_message.merge(@scoped_properties)
-                        .merge!(message)
-                        .then { |log_entry| to_nested(log_entry) }
+      total_message = deep_merge(total_message, to_nested(@scoped_properties))
+      total_message = deep_merge(total_message, to_nested(message))
 
       @output.puts total_message.to_json
     end

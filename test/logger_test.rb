@@ -7,16 +7,14 @@ describe Twiglet::Logger do
   before do
     @now = -> { Time.utc(2020, 5, 11, 15, 1, 1) }
     @buffer = StringIO.new
-    @logger = Twiglet::Logger.new(conf: {
-                                    service: 'petshop',
-                                    now: @now,
-                                    output: @buffer
-                                  })
+    @logger = Twiglet::Logger.new('petshop',
+                                  now: @now,
+                                  output: @buffer)
   end
 
   it 'should throw an error with an empty service name' do
     assert_raises RuntimeError do
-      Twiglet::Logger.new(conf: { service: '  ' })
+      Twiglet::Logger.new('  ')
     end
   end
 
@@ -27,7 +25,7 @@ describe Twiglet::Logger do
   end
 
   it 'should log mandatory attributes' do
-    @logger.error({ message: 'Out of pets exception' })
+    @logger.error({message: 'Out of pets exception'})
     actual_log = read_json(@buffer)
 
     expected_log = {
@@ -45,9 +43,9 @@ describe Twiglet::Logger do
   end
 
   it 'should log the provided message' do
-    @logger.error({ event:
-                      { action: 'exception' },
-                    message: 'Emergency! Emergency!' })
+    @logger.error({event:
+                     {action: 'exception'},
+                   message: 'Emergency! Emergency!'})
     log = read_json(@buffer)
 
     assert_equal 'exception', log[:event][:action]
@@ -59,22 +57,25 @@ describe Twiglet::Logger do
       trace: {
         id: '1c8a5fb2-fecd-44d8-92a4-449eb2ce4dcb'
       },
-      request: { method: 'get' },
-      response: { status_code: 200 }
+      service: {
+        type: 'shop'
+      },
+      request: {method: 'get'},
+      response: {status_code: 200}
     }
 
     output = StringIO.new
-    logger = Twiglet::Logger.new(conf: {
-                                   service: 'petshop',
-                                   now: @now,
-                                   output: output
-                                 },
+    logger = Twiglet::Logger.new('petshop',
+                                 now: @now,
+                                 output: output,
                                  scoped_properties: extra_properties)
 
-    logger.error({ message: 'GET /cats' })
+    logger.error({message: 'GET /cats'})
     log = read_json output
 
     assert_equal '1c8a5fb2-fecd-44d8-92a4-449eb2ce4dcb', log[:trace][:id]
+    assert_equal 'petshop', log[:service][:name]
+    assert_equal 'shop', log[:service][:type]
     assert_equal 'get', log[:request][:method]
     assert_equal 200, log[:response][:status_code]
   end
@@ -82,15 +83,15 @@ describe Twiglet::Logger do
   it "should be able to add properties with '.with'" do
     # Let's add some context to this customer journey
     purchase_logger = @logger.with({
-                                     trace: { id: '1c8a5fb2-fecd-44d8-92a4-449eb2ce4dcb' },
-                                     customer: { full_name: 'Freda Bloggs' },
-                                     event: { action: 'pet purchase' }
+                                     trace: {id: '1c8a5fb2-fecd-44d8-92a4-449eb2ce4dcb'},
+                                     customer: {full_name: 'Freda Bloggs'},
+                                     event: {action: 'pet purchase'}
                                    })
 
     # do stuff
     purchase_logger.info({
                            message: 'customer bought a dog',
-                           pet: { name: 'Barker', species: 'dog', breed: 'Bitsa' }
+                           pet: {name: 'Barker', species: 'dog', breed: 'Bitsa'}
                          })
 
     log = read_json @buffer
@@ -132,7 +133,7 @@ describe Twiglet::Logger do
     @logger.debug({
                     "trace.id": '1c8a5fb2-fecd-44d8-92a4-449eb2ce4dcb',
                     message: 'customer bought a dog',
-                    pet: { name: 'Barker', breed: 'Bitsa' },
+                    pet: {name: 'Barker', breed: 'Bitsa'},
                     "pet.species": 'dog'
                   })
     log = read_json(@buffer)
@@ -171,7 +172,7 @@ describe Twiglet::Logger do
     begin
       1 / 0
     rescue StandardError => e
-      @logger.error({ message: 'Artificially raised exception' }, e)
+      @logger.error({message: 'Artificially raised exception'}, e)
     end
 
     actual_log = read_json(@buffer)
