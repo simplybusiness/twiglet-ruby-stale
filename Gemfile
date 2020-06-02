@@ -3,5 +3,6 @@
 source 'https://rubygems.org'
 gem 'simplycop', git: 'https://github.com/simplybusiness/simplycop.git'
 group :development, :test do
+  gem 'rake'
   gem 'minitest'
 end
