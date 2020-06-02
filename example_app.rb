@@ -4,7 +4,7 @@ require_relative 'lib/twiglet/logger'
 
 PORT = 8080
 
-logger = Logger.new(conf: { service: 'petshop' })
+logger = Twiglet::Logger.new('petshop')
 
 # Start our petshop
 logger.info({
@@ -45,7 +45,7 @@ request_logger.info({
                       }
                     })
 
-# Logging with a non-empty message is an anti-pattern and is therefore forbidden
+# Logging with an empty message is an anti-pattern and is therefore forbidden
 # Both of the following lines would throw an error
 # request_logger.error({ message: "" })
 # logger.debug({ message: " " })
