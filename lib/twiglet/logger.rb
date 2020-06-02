@@ -8,13 +8,18 @@ module Twiglet
   class Logger
     include ElasticCommonSchema
 
-    def initialize(conf:, scoped_properties: {})
-      @service = conf[:service]
-      @now = conf[:now] || -> { Time.now.utc }
-      @output = conf[:output] || $stdout
+    def initialize(
+      service_name,
+      scoped_properties: {},
+      now: -> { Time.now.utc },
+      output: $stdout
+    )
+      @service_name = service_name
+      @now = now
+      @output = output
 
       raise 'configuration must have a service name' \
-        unless @service.is_a?(String) && !@service.strip.empty?
+        unless @service_name.is_a?(String) && !@service_name.strip.empty?
 
       @scoped_properties = scoped_properties
     end
@@ -47,10 +52,10 @@ module Twiglet
     end
 
     def with(scoped_properties)
-      Logger.new(conf: { service: @service,
-                         now: @now,
-                         output: @output },
-                 scoped_properties: scoped_properties)
+      Logger.new(@service_name,
+                 scoped_properties: scoped_properties,
+                 now: @now,
+                 output: @output)
     end
 
     private
@@ -65,7 +70,7 @@ module Twiglet
 
       total_message = {
         service: {
-          name: @service
+          name: @service_name
         },
         "@timestamp": @now.call.iso8601(3),
         log: {
@@ -73,8 +78,8 @@ module Twiglet
         }
       }
       total_message = total_message.merge(@scoped_properties)
-                                   .merge!(message)
-                                   .then { |log_entry| to_nested(log_entry) }
+                        .merge!(message)
+                        .then { |log_entry| to_nested(log_entry) }
 
       @output.puts total_message.to_json
     end
