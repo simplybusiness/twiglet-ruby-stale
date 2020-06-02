@@ -10,7 +10,7 @@ module Twiglet
 
     def initialize(
       service_name,
-      scoped_properties: {},
+      default_properties: {},
       now: -> { Time.now.utc },
       output: $stdout
     )
@@ -21,7 +21,7 @@ module Twiglet
       raise 'Service name is mandatory' \
         unless @service_name.is_a?(String) && !@service_name.strip.empty?
 
-      @scoped_properties = scoped_properties
+      @default_properties = default_properties
     end
 
     def debug(message)
@@ -51,9 +51,9 @@ module Twiglet
       log(level: 'critical', message: message)
     end
 
-    def with(scoped_properties)
+    def with(default_properties)
       Logger.new(@service_name,
-                 scoped_properties: scoped_properties,
+                 default_properties: default_properties,
                  now: @now,
                  output: @output)
     end
@@ -77,7 +77,7 @@ module Twiglet
           level: level
         }
       }
-      total_message = deep_merge(total_message, to_nested(@scoped_properties))
+      total_message = deep_merge(total_message, to_nested(@default_properties))
       total_message = deep_merge(total_message, to_nested(message))
 
       @output.puts total_message.to_json

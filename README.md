@@ -18,7 +18,7 @@ require 'twiglet/logger'
 logger = Twiglet::Logger.new('service name')
 ```
 
-A hash can optionally be passed in as a keyword argument for `scoped_properties`. This hash must be in the Elastic Common Schema format and will be present in every log message created by this Twiglet logger object.
+A hash can optionally be passed in as a keyword argument for `default_properties`. This hash must be in the Elastic Common Schema format and will be present in every log message created by this Twiglet logger object.
 
 You may also provide an optional `output` keyword argument which should be an object with a `puts` method - like `$stdout`.
 

@@ -68,7 +68,7 @@ describe Twiglet::Logger do
     logger = Twiglet::Logger.new('petshop',
                                  now: @now,
                                  output: output,
-                                 scoped_properties: extra_properties)
+                                 default_properties: extra_properties)
 
     logger.error({message: 'GET /cats'})
     log = read_json output
