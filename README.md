@@ -15,10 +15,16 @@ Create a new logger like so:
 
 ```ruby
 require 'twiglet/logger'
-logger = Twiglet::Logger.new(conf: { service: 'petshop' })
+logger = Twiglet::Logger.new('petshop') # 'petshop' is the service name
 ```
 
-The logger may be passed in the configuration object an optional `output` attribute which should be an object with a `puts` method - like `$stdout`. The configuration object may also have an optional `now` attribute, which should be a function returning a `Time` object. The defaults should serve for most uses, though you may want to override them for testing as we have done [here](test/logger_test.rb).
+A hash can optionally be passed in as a keyword argument for `scoped_properties`. This hash must be in the Elastic Common Schema format and will be present in every log message created by this Twiglet logger object.
+
+You may also provide an optional `output` keyword argument which should be an object with a `puts` method - like `$stdout`.
+
+Lastly, you can provide another optional keyword argument called `now`, which should be a function returning a `Time` object.
+
+The defaults for both `output` and `now` should serve for most uses, though you may want to override them for testing as we have done [here](test/logger_test.rb).
 
 To use, simply invoke like most other loggers:
 
