@@ -18,7 +18,7 @@ module Twiglet
       @now = now
       @output = output
 
-      raise 'configuration must have a service name' \
+      raise 'Service name is mandatory' \
         unless @service_name.is_a?(String) && !@service_name.strip.empty?
 
       @scoped_properties = scoped_properties
