@@ -68,7 +68,7 @@ module Twiglet
 
       message[:message].strip.empty? && raise('The \'message\' property of log object must not be empty')
 
-      total_message = {
+      base_message = {
         service: {
           name: @service_name
         },
@@ -78,7 +78,7 @@ module Twiglet
         }
       }
 
-      @output.puts total_message
+      @output.puts base_message
                      .deep_merge(@default_properties.to_nested)
                      .deep_merge(message.to_nested)
                      .to_json
