@@ -2,11 +2,11 @@
 
 require 'time'
 require 'json'
-require_relative '../elastic_common_schema'
+require_relative '../hash_extensions'
 
 module Twiglet
   class Logger
-    include ElasticCommonSchema
+    Hash.include HashExtensions
 
     def initialize(
       service_name,
@@ -77,10 +77,11 @@ module Twiglet
           level: level
         }
       }
-      total_message = deep_merge(total_message, to_nested(@default_properties))
-      total_message = deep_merge(total_message, to_nested(message))
 
-      @output.puts total_message.to_json
+      @output.puts total_message
+                     .deep_merge(@default_properties.to_nested)
+                     .deep_merge(message.to_nested)
+                     .to_json
     end
   end
 end
