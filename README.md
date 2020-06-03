@@ -15,10 +15,16 @@ Create a new logger like so:
 
 ```ruby
 require 'twiglet/logger'
-logger = Twiglet::Logger.new(conf: { service: 'petshop' })
+logger = Twiglet::Logger.new('service name')
 ```
 
-The logger may be passed in the configuration object an optional `output` attribute which should be an object with a `puts` method - like `$stdout`. The configuration object may also have an optional `now` attribute, which should be a function returning a `Time` object. The defaults should serve for most uses, though you may want to override them for testing as we have done [here](test/logger_test.rb).
+A hash can optionally be passed in as a keyword argument for `default_properties`. This hash must be in the Elastic Common Schema format and will be present in every log message created by this Twiglet logger object.
+
+You may also provide an optional `output` keyword argument which should be an object with a `puts` method - like `$stdout`.
+
+Lastly, you can provide another optional keyword argument called `now`, which should be a function returning a `Time` string in ISO8601 format.
+
+The defaults for both `output` and `now` should serve for most uses, though you may want to override them for testing as we have done [here](test/logger_test.rb).
 
 To use, simply invoke like most other loggers:
 
@@ -29,7 +35,7 @@ logger.error({ event: { action: 'startup' }, message: "Emergency! There's an Eme
 This will write to STDOUT a JSON string:
 
 ```json
-{"service":{"name":"petshop"},"@timestamp":"2020-05-14T10:54:59.164+01:00","log":{"level":"error"},"event":{"action":"startup"},"message":"Emergency! There's an Emergency going on"}
+{"service":{"name":"service name"},"@timestamp":"2020-05-14T10:54:59.164+01:00","log":{"level":"error"},"event":{"action":"startup"},"message":"Emergency! There's an Emergency going on"}
 ```
 
 Obviously the timestamp will be different.
@@ -52,7 +58,7 @@ logger.info({
 This writes:
 
 ```json
-{"service":{"name":"petshop"},"@timestamp":"2020-05-14T10:56:49.527+01:00","log":{"level":"info"},"event":{"action":"HTTP request"},"message":"GET /pets success","trace":{"id":"1c8a5fb2-fecd-44d8-92a4-449eb2ce4dcb"},"http":{"request":{"method":"get"},"response":{"status_code":200}},"url":{"path":"/pets"}}
+{"service":{"name":"service name"},"@timestamp":"2020-05-14T10:56:49.527+01:00","log":{"level":"info"},"event":{"action":"HTTP request"},"message":"GET /pets success","trace":{"id":"1c8a5fb2-fecd-44d8-92a4-449eb2ce4dcb"},"http":{"request":{"method":"get"},"response":{"status_code":200}},"url":{"path":"/pets"}}
 ```
 
 It may be that when making a series of logs that write information about a single event, you may want to avoid duplication by creating an event specific logger that includes the context:
@@ -76,7 +82,7 @@ request_logger.error({
 which will print:
 
 ```json
-{"service":{"name":"petshop"},"@timestamp":"2020-05-14T10:58:30.780+01:00","log":{"level":"error"},"event":{"action":"HTTP request"},"trace":{"id":"126bb6fa-28a2-470f-b013-eefbf9182b2d"},"message":"Error 500 in /pets/buy","http":{"request":{"method":"post","url.path":"/pet/buy"},"response":{"status_code":500}}}
+{"service":{"name":"service name"},"@timestamp":"2020-05-14T10:58:30.780+01:00","log":{"level":"error"},"event":{"action":"HTTP request"},"trace":{"id":"126bb6fa-28a2-470f-b013-eefbf9182b2d"},"message":"Error 500 in /pets/buy","http":{"request":{"method":"post","url.path":"/pet/buy"},"response":{"status_code":500}}}
 ```
 
 ## Use of dotted keys
@@ -110,7 +116,7 @@ logger.info({
 Both cases would print out exact the same log item:
 
 ```json
-{"service":{"name":"petshop"},"@timestamp":"2020-05-14T10:59:31.183+01:00","log":{"level":"info"},"event":{"action":"HTTP request"},"message":"GET /pets success","trace":{"id":"1c8a5fb2-fecd-44d8-92a4-449eb2ce4dcb"},"http":{"request":{"method":"get"},"response":{"status_code":200}},"url":{"path":"/pets"}}
+{"service":{"name":"service name"},"@timestamp":"2020-05-14T10:59:31.183+01:00","log":{"level":"info"},"event":{"action":"HTTP request"},"message":"GET /pets success","trace":{"id":"1c8a5fb2-fecd-44d8-92a4-449eb2ce4dcb"},"http":{"request":{"method":"get"},"response":{"status_code":200}},"url":{"path":"/pets"}}
 ```
 
 ## How to contribute

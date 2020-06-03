@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.version               = Twiglet::VERSION
   gem.authors               = ['Simply Business']
   gem.email                 = ['tech@simplybusiness.co.uk']
-  gem.homepage              = 'https://github.com/simplybusiness/twiglet'
+  gem.homepage              = 'https://github.com/simplybusiness/twiglet-ruby'
 
   gem.summary               = 'Twiglet'
   gem.description           = 'Like a log, only smaller.'

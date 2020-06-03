@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require_relative '../lib/elastic_common_schema'
+require_relative '../lib/hash_extensions'
 
-describe ElasticCommonSchema do
+describe HashExtensions do
   before do
-    @ecs = Object.new
-    @ecs.extend(ElasticCommonSchema)
+    Hash.include HashExtensions
   end
 
   it 'should retain an object without . in any keys' do
@@ -21,7 +20,7 @@ describe ElasticCommonSchema do
       "@timestamp": '2020-05-09T15:13:20.736Z'
     }
 
-    expected = @ecs.to_nested(actual)
+    expected = actual.to_nested
     assert_equal actual, expected
   end
 
@@ -31,7 +30,7 @@ describe ElasticCommonSchema do
       "log.level": 'error'
     }
 
-    nested = @ecs.to_nested(actual)
+    nested = actual.to_nested
 
     assert_equal 'petshop', nested[:service][:name]
     assert_equal 'error', nested[:log][:level]
@@ -45,7 +44,7 @@ describe ElasticCommonSchema do
       "log.level": 'error'
     }
 
-    nested = @ecs.to_nested(actual)
+    nested = actual.to_nested
 
     assert_equal 'petshop', nested[:service][:name]
     assert_equal 'ps001', nested[:service][:id]
@@ -61,7 +60,7 @@ describe ElasticCommonSchema do
       "http.response.status_code": 200
     }
 
-    nested = @ecs.to_nested(actual)
+    nested = actual.to_nested
 
     assert_equal 'get', nested[:http][:request][:method]
     assert_equal 112, nested[:http][:request][:body][:bytes]
@@ -73,7 +72,7 @@ describe ElasticCommonSchema do
     first = { id: 1, name: 'petshop' }
     second = { level: 'debug', code: 5 }
 
-    actual = @ecs.deep_merge(first, second)
+    actual = first.deep_merge(second)
 
     assert_equal 1, actual[:id]
     assert_equal 'petshop', actual[:name]
@@ -85,7 +84,7 @@ describe ElasticCommonSchema do
     first = { id: 1, name: 'petshop', level: 'debug' }
     second = { name: 'petstore', level: 'error', code: 5 }
 
-    actual = @ecs.deep_merge(first, second)
+    actual = first.deep_merge(second)
 
     assert_equal 1, actual[:id]
     assert_equal 'petstore', actual[:name]
@@ -97,7 +96,7 @@ describe ElasticCommonSchema do
     first = { service: { name: 'petshop' } }
     second = { service: { id: 'ps001' } }
 
-    actual = @ecs.deep_merge(first, second)
+    actual = first.deep_merge(second)
     assert_equal 'petshop', actual[:service][:name]
     assert_equal 'ps001', actual[:service][:id]
   end
@@ -106,7 +105,7 @@ describe ElasticCommonSchema do
     first = { http: { request: { method: 'get', bytes: 124 } } }
     second = { http: { response: { status_code: 200, bytes: 5001 } } }
 
-    actual = @ecs.deep_merge(first, second)
+    actual = first.deep_merge(second)
 
     assert_equal 'get', actual[:http][:request][:method]
     assert_equal 124, actual[:http][:request][:bytes]
@@ -118,7 +117,7 @@ describe ElasticCommonSchema do
     first = {}
     second = { id: 1 }
 
-    actual = @ecs.deep_merge(first, second)
+    actual = first.deep_merge(second)
 
     assert_equal 1, actual[:id]
   end
@@ -127,7 +126,7 @@ describe ElasticCommonSchema do
     first = { id: 1 }
     second = {}
 
-    actual = @ecs.deep_merge(first, second)
+    actual = first.deep_merge(second)
 
     assert_equal 1, actual[:id]
   end
