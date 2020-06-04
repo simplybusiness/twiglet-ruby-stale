@@ -126,7 +126,7 @@ First: Please read our project [Code of Conduct](../CODE_OF_CONDUCT.md).
 Second: run the tests and make sure your changes don't break anything:
 
 ```bash
-for file in test/*test.rb; do ruby $file; done
+bundle exec rake test
 ```
 
 Then please feel free to submit a PR.
