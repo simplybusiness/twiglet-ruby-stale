@@ -191,11 +191,12 @@ describe Twiglet::Logger do
   ]
 
   levels.each do |attrs|
-    it 'should correctly log level' do
+    it "should correctly log level when calling #{attrs[:method]}" do
       @logger.public_send(attrs[:method], {message: 'a log message'})
       actual_log = read_json(@buffer)
 
       assert_equal attrs[:level], actual_log[:log][:level]
+      assert_equal 'a log message', actual_log[:message]
     end
   end
 

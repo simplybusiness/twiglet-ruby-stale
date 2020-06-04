@@ -36,7 +36,7 @@ module Twiglet
       log(level: 'warning', message: message)
     end
 
-    alias :warn :warning
+    alias_method :warn, :warning
 
     def error(message, error = nil)
       if error
