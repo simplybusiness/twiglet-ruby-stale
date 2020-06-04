@@ -182,6 +182,24 @@ describe Twiglet::Logger do
     assert_match 'logger_test.rb', actual_log[:backtrace].first
   end
 
+  levels = [
+    { method: :debug, level: 'debug' },
+    { method: :info, level: 'info' },
+    { method: :warning, level: 'warning' },
+    { method: :warn, level: 'warning' },
+    { method: :error, level: 'error' }
+  ]
+
+  levels.each do |attrs|
+    it "should correctly log level when calling #{attrs[:method]}" do
+      @logger.public_send(attrs[:method], {message: 'a log message'})
+      actual_log = read_json(@buffer)
+
+      assert_equal attrs[:level], actual_log[:log][:level]
+      assert_equal 'a log message', actual_log[:message]
+    end
+  end
+
   private
 
   def read_json(buffer)
