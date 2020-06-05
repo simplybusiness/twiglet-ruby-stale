@@ -39,8 +39,10 @@ module Twiglet
     def error(message, error = nil)
       if error
         message = message.merge({
-                                  'error.message': error.message,
-                                  'error.stack_trace': error.backtrace.join("\n")
+                                  'error': {
+                                    'message': error.message,
+                                    'stack_trace': error.backtrace.join("\n")
+                                  }
                                 })
       end
 
