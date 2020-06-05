@@ -178,8 +178,8 @@ describe Twiglet::Logger do
     actual_log = read_json(@buffer)
 
     assert_equal 'Artificially raised exception', actual_log[:message]
-    assert_equal 'divided by 0', actual_log[:error_name]
-    assert_match 'logger_test.rb', actual_log[:backtrace].first
+    assert_equal 'divided by 0', actual_log[:error][:message]
+    assert_match 'logger_test.rb', actual_log[:error][:stack_trace].lines.first
   end
 
   private
