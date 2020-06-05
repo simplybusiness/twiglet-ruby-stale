@@ -40,6 +40,13 @@ This will write to STDOUT a JSON string:
 
 Obviously the timestamp will be different.
 
+Errors can be logged as well, and this will log the error message and backtrace in the relevant ECS compliant fields:
+
+```ruby
+db_err = StandardError.new('Connection timed-out')
+logger.error({ message: 'DB connection failed.' }, db_err)
+```
+
 Add log event specific information simply as attributes in a hash:
 
 ```ruby
