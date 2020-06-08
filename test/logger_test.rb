@@ -182,12 +182,23 @@ describe Twiglet::Logger do
     assert_match 'logger_test.rb', actual_log[:error][:stack_trace].lines.first
   end
 
+  it 'should log an error without backtrace' do
+    e = StandardError.new('Connection timed-out')
+    @logger.error({message: 'Artificially raised exception'}, e)
+
+    actual_log = read_json(@buffer)
+
+    assert_equal 'Artificially raised exception', actual_log[:message]
+    assert_equal 'Connection timed-out', actual_log[:error][:message]
+    assert_nil actual_log[:error][:stack_trace]
+  end
+
   levels = [
-    { method: :debug, level: 'debug' },
-    { method: :info, level: 'info' },
-    { method: :warning, level: 'warning' },
-    { method: :warn, level: 'warning' },
-    { method: :error, level: 'error' }
+    {method: :debug, level: 'debug'},
+    {method: :info, level: 'info'},
+    {method: :warning, level: 'warning'},
+    {method: :warn, level: 'warning'},
+    {method: :error, level: 'error'}
   ]
 
   levels.each do |attrs|
