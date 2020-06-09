@@ -190,7 +190,7 @@ describe Twiglet::Logger do
 
     assert_equal 'Artificially raised exception', actual_log[:message]
     assert_equal 'Connection timed-out', actual_log[:error][:message]
-    assert_nil actual_log[:error][:stack_trace]
+    refute(actual_log[:error].key?(:stack_trace))
   end
 
   levels = [
