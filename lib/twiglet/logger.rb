@@ -65,12 +65,16 @@ module Twiglet
     private
 
     def log(level:, message:)
-      raise 'Message must be a Hash' unless message.is_a?(Hash)
-
-      message = message.transform_keys(&:to_sym)
-      message.key?(:message) || raise('Log object must have a \'message\' property')
-
-      message[:message].strip.empty? && raise('The \'message\' property of log object must not be empty')
+      case message
+      when String
+        message = { message: message }
+      when Hash
+        message = message.transform_keys(&:to_sym)
+        message.key?(:message) || raise('Log object must have a \'message\' property')
+        message[:message].strip.empty? && raise('The \'message\' property of log object must not be empty')
+      else
+        raise('Message must be String or Hash')
+      end
 
       base_message = {
         service: {
