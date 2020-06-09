@@ -67,6 +67,8 @@ module Twiglet
     def log(level:, message:)
       case message
       when String
+        raise('The \'message\' property of log object must not be empty') if message.strip.empty?
+
         message = { message: message }
       when Hash
         message = message.transform_keys(&:to_sym)
