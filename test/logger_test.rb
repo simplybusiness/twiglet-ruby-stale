@@ -12,13 +12,13 @@ describe Twiglet::Logger do
                                   output: @buffer)
   end
 
-  levels = [
+  LEVELS = [
     { method: :debug, level: 'debug' },
     { method: :info, level: 'info' },
     { method: :warning, level: 'warning' },
     { method: :warn, level: 'warning' },
     { method: :error, level: 'error' }
-  ]
+  ].freeze
 
   it 'should throw an error with an empty service name' do
     assert_raises RuntimeError do
@@ -191,7 +191,7 @@ describe Twiglet::Logger do
       assert_match 'logger_test.rb', actual_log[:error][:stack_trace].lines.first
     end
 
-    levels.each do |attrs|
+    LEVELS.each do |attrs|
       it "should correctly log level when calling #{attrs[:method]}" do
         @logger.public_send(attrs[:method], {message: 'a log message'})
         actual_log = read_json(@buffer)
@@ -214,25 +214,34 @@ describe Twiglet::Logger do
       actual_log = read_json(@buffer)
 
       expected_log = {
-          message: 'Out of pets exception',
-          "@timestamp": '2020-05-11T15:01:01.000Z',
-          service: {
-              name: 'petshop'
-          },
-          log: {
-              level: 'error'
-          }
+        message: 'Out of pets exception',
+        "@timestamp": '2020-05-11T15:01:01.000Z',
+        service: {
+          name: 'petshop'
+        },
+        log: {
+          level: 'error'
+        }
       }
 
       assert_equal expected_log, actual_log
     end
 
     it 'should log the provided message' do
-      @logger.error('Emergency! Emergency!'})
+      @logger.error('Emergency! Emergency!')
       log = read_json(@buffer)
 
-      assert_equal 'exception', log[:event][:action]
       assert_equal 'Emergency! Emergency!', log[:message]
+    end
+
+    LEVELS.each do |attrs|
+      it "should correctly log level when calling #{attrs[:method]}" do
+        @logger.public_send(attrs[:method], 'a log message')
+        actual_log = read_json(@buffer)
+
+        assert_equal attrs[:level], actual_log[:log][:level]
+        assert_equal 'a log message', actual_log[:message]
+      end
     end
   end
 
