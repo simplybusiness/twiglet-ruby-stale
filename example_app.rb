@@ -17,6 +17,9 @@ logger.info({
               }
             })
 
+# Use text logging
+logger.info("Ready to go, listening on port #{PORT}")
+#
 # We get a request
 request_logger = logger.with({
                                event: {
