@@ -40,12 +40,13 @@ module Twiglet
 
     def error(message, error = nil)
       if error
-        message = message.merge({
-                                  'error': {
-                                    'message': error.message,
-                                    'stack_trace': error.backtrace.join("\n")
-                                  }
-                                })
+        error_fields = {
+          'error': {
+            'message': error.message
+          }
+        }
+        add_stack_trace(error_fields, error)
+        message = message.merge(error_fields)
       end
 
       log(level: 'error', message: message)
@@ -107,6 +108,10 @@ module Twiglet
                        .deep_merge(@default_properties.to_nested)
                        .deep_merge(message.to_nested)
                        .to_json
+    end
+
+    def add_stack_trace(hash_to_add_to, error)
+      hash_to_add_to[:error][:stack_trace] = error.backtrace.join("\n") if error.backtrace
     end
   end
 end
