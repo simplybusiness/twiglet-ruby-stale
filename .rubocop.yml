@@ -8,7 +8,7 @@ AllCops:
   Documentation:
     Enabled: false
 Metrics/BlockLength:
-  Max: 200
+  Max: 250
 Metrics/AbcSize:
   Max: 20
 Metrics/MethodLength:
