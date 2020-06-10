@@ -40,6 +40,17 @@ This will write to STDOUT a JSON string:
 
 Obviously the timestamp will be different.
 
+Alternatively, if you just want to log some error message in text format
+```ruby
+logger.error( "Emergency! There's an Emergency going on")
+```
+
+This will write to STDOUT a JSON string:
+
+```json
+{"service":{"name":"service name"},"@timestamp":"2020-05-14T10:54:59.164+01:00","log":{"level":"error"}, "message":"Emergency! There's an Emergency going on"}
+```
+
 Errors can be logged as well, and this will log the error message and backtrace in the relevant ECS compliant fields:
 
 ```ruby
@@ -67,6 +78,18 @@ This writes:
 ```json
 {"service":{"name":"service name"},"@timestamp":"2020-05-14T10:56:49.527+01:00","log":{"level":"info"},"event":{"action":"HTTP request"},"message":"GET /pets success","trace":{"id":"1c8a5fb2-fecd-44d8-92a4-449eb2ce4dcb"},"http":{"request":{"method":"get"},"response":{"status_code":200}},"url":{"path":"/pets"}}
 ```
+
+Similar to error you can use text logging here as:
+
+```
+logger.info('GET /pets success')
+```
+This writes:
+
+```json
+{"service":{"name":"service name"},"@timestamp":"2020-05-14T10:56:49.527+01:00","log":{"level":"info"}}
+```
+
 
 It may be that when making a series of logs that write information about a single event, you may want to avoid duplication by creating an event specific logger that includes the context:
 
