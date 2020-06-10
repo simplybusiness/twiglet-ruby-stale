@@ -17,6 +17,8 @@ describe Twiglet::Logger do
     { method: :info, level: 'info' },
     { method: :warning, level: 'warning' },
     { method: :warn, level: 'warning' },
+    { method: :critical, level: 'critical' },
+    { method: :fatal, level: 'critical' },
     { method: :error, level: 'error' }
   ].freeze
 

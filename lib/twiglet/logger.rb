@@ -55,6 +55,8 @@ module Twiglet
       log(level: 'critical', message: message)
     end
 
+    alias_method :fatal, :critical
+
     def with(default_properties)
       Logger.new(@service_name,
                  default_properties: default_properties,
@@ -67,31 +69,44 @@ module Twiglet
     def log(level:, message:)
       case message
       when String
-        raise('The \'message\' property of log object must not be empty') if message.strip.empty?
-
-        message = { message: message }
+        log_text(level, message: message)
       when Hash
-        message = message.transform_keys(&:to_sym)
-        message.key?(:message) || raise('Log object must have a \'message\' property')
-        message[:message].strip.empty? && raise('The \'message\' property of log object must not be empty')
+        log_object(level, message: message)
       else
         raise('Message must be String or Hash')
       end
+    end
 
+    def log_text(level, message:)
+      raise('The \'message\' property of log object must not be empty') if message.strip.empty?
+
+      message = { message: message }
+      log_message(level, message: message)
+    end
+
+    def log_object(level, message:)
+      message = message.transform_keys(&:to_sym)
+      message.key?(:message) || raise('Log object must have a \'message\' property')
+      message[:message].strip.empty? && raise('The \'message\' property of log object must not be empty')
+
+      log_message(level, message: message)
+    end
+
+    def log_message(level, message:)
       base_message = {
+        "@timestamp": @now.call.iso8601(3),
         service: {
           name: @service_name
         },
-        "@timestamp": @now.call.iso8601(3),
         log: {
           level: level
         }
       }
 
       @output.puts base_message
-                     .deep_merge(@default_properties.to_nested)
-                     .deep_merge(message.to_nested)
-                     .to_json
+                       .deep_merge(@default_properties.to_nested)
+                       .deep_merge(message.to_nested)
+                       .to_json
     end
   end
 end
