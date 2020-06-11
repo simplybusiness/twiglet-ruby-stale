@@ -9,17 +9,15 @@ describe Twiglet::Logger do
     @buffer = StringIO.new
     @logger = Twiglet::Logger.new('petshop',
                                   now: @now,
-                                  output: @buffer)
+                                  output: @buffer).logging
   end
 
   LEVELS = [
-    { method: :debug, level: 'debug' },
-    { method: :info, level: 'info' },
-    { method: :warning, level: 'warning' },
-    { method: :warn, level: 'warning' },
-    { method: :critical, level: 'critical' },
-    { method: :fatal, level: 'critical' },
-    { method: :error, level: 'error' }
+    { method: :debug, level: 'DEBUG' },
+    { method: :info, level: 'INFO' },
+    { method: :warn, level: 'WARN' },
+    { method: :fatal, level: 'FATAL' },
+    { method: :error, level: 'ERROR' }
   ].freeze
 
   it 'should throw an error with an empty service name' do
@@ -36,18 +34,18 @@ describe Twiglet::Logger do
     end
 
     it 'should log mandatory attributes' do
-      @logger.error({message: 'Out of pets exception'})
+      @logger.error("Out of pets exception")
       actual_log = read_json(@buffer)
 
       expected_log = {
-        message: 'Out of pets exception',
         "@timestamp": '2020-05-11T15:01:01.000Z',
         service: {
           name: 'petshop'
         },
         log: {
-          level: 'error'
-        }
+          level: 'ERROR'
+        },
+        message: 'Out of pets exception'
       }
 
       assert_equal expected_log, actual_log
@@ -79,7 +77,7 @@ describe Twiglet::Logger do
       logger = Twiglet::Logger.new('petshop',
                                    now: @now,
                                    output: output,
-                                   default_properties: extra_properties)
+                                   default_properties: extra_properties).logging
 
       logger.error({message: 'GET /cats'})
       log = read_json output
@@ -120,7 +118,7 @@ describe Twiglet::Logger do
       @logger.debug(message)
       log = read_json(@buffer)
 
-      assert_equal 'Guinea pigs arrived', log[:message]
+      # assert_equal 'Guinea pigs arrived', log[:message]
     end
 
     it 'should be able to convert dotted keys to nested objects' do
@@ -227,14 +225,14 @@ describe Twiglet::Logger do
       actual_log = read_json(@buffer)
 
       expected_log = {
-        message: 'Out of pets exception',
         "@timestamp": '2020-05-11T15:01:01.000Z',
         service: {
           name: 'petshop'
         },
         log: {
-          level: 'error'
-        }
+          level: 'ERROR'
+        },
+        message: 'Out of pets exception'
       }
 
       assert_equal expected_log, actual_log
@@ -245,6 +243,10 @@ describe Twiglet::Logger do
       log = read_json(@buffer)
 
       assert_equal 'Emergency! Emergency!', log[:message]
+    end
+
+    it 'should log the block' do
+      @logger.debug { "some message" }
     end
 
     LEVELS.each do |attrs|
