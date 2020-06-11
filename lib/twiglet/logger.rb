@@ -1,7 +1,9 @@
 # frozen_string_literal: true
+
 require 'logger'
 require 'time'
 require 'json'
+
 require_relative '../hash_extensions'
 
 module Twiglet
@@ -33,7 +35,7 @@ module Twiglet
 
     def with(default_properties)
       Twiglet::Logger.new(@service_name,
-                          default_properties: @default_properties,
+                          default_properties: default_properties,
                           now: @now,
                           output: @output)
     end
@@ -52,7 +54,7 @@ module Twiglet
         super()
       end
 
-      def call(severity, time, progname, msg)
+      def call(severity, _time, _progname, msg)
         level = severity.downcase
         log(level: level, message: msg)
       end
