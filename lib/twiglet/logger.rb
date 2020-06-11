@@ -40,6 +40,25 @@ module Twiglet
                           output: @output)
     end
 
+    def error(progname = nil, error = nil, &block)
+      if error
+        error_msg = {
+          error: {
+            'message': 'error.message'
+          },
+          message: progname
+        }
+        add_stack_trace(error_msg, error)
+        super(error_msg, &block)
+      else
+        super(progname, &block)
+      end
+    end
+
+    def add_stack_trace(hash_to_add_to, error)
+      hash_to_add_to[:error][:stack_trace] = error.backtrace.join("\n") if error.backtrace
+    end
+
     class Formatter < ::Logger::Formatter
       Hash.include HashExtensions
 
@@ -102,10 +121,6 @@ module Twiglet
           .deep_merge(@default_properties.to_nested)
           .deep_merge(message.to_nested)
           .to_json
-      end
-
-      def add_stack_trace(hash_to_add_to, error)
-        hash_to_add_to[:error][:stack_trace] = error.backtrace.join("\n") if error.backtrace
       end
     end
   end
