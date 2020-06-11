@@ -16,15 +16,15 @@ module Twiglet
       @now = now
       @default_properties = default_properties
       @output = output
+
+      raise 'Service name is mandatory' \
+        unless service_name.is_a?(String) && !service_name.strip.empty?
+
       formatter = Formatter.new(
         service_name: service_name,
         default_properties: default_properties,
         now: now
       )
-
-      raise 'Service name is mandatory' \
-        unless service_name.is_a?(String) && !service_name.strip.empty?
-
       super(output, formatter: formatter)
     end
 
