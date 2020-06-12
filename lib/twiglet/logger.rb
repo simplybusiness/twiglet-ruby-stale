@@ -43,17 +43,20 @@ module Twiglet
     def error(progname = nil, error = nil, &block)
       if error
         error_msg = {
-          error: {
-            'message': 'error.message'
-          },
-          message: progname
+          'error': {
+            'message': error.message
+          }
         }
         add_stack_trace(error_msg, error)
+        message = progname.key?(:message) ? progname : { message: progname }
+        error_msg.merge!(message)
         super(error_msg, &block)
       else
         super(progname, &block)
       end
     end
+
+    private
 
     def add_stack_trace(hash_to_add_to, error)
       hash_to_add_to[:error][:stack_trace] = error.backtrace.join("\n") if error.backtrace
