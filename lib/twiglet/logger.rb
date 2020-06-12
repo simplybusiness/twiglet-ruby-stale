@@ -90,7 +90,7 @@ module Twiglet
         when Hash
           log_object(level, message: message)
         else
-          raise('Message must be String or Hash')
+          super.call
         end
       end
 

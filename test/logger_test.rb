@@ -255,6 +255,15 @@ describe Twiglet::Logger do
         assert_equal attrs[:level], actual_log[:log][:level]
         assert_equal 'a log message', actual_log[:message]
       end
+
+      it "should correctly log the block when calling #{attrs[:method]}" do
+        block = proc { 'a block log message' }
+        @logger.public_send(attrs[:method], &block)
+        actual_log = read_json(@buffer)
+
+        assert_equal attrs[:level], actual_log[:log][:level]
+        assert_equal 'a block log message', actual_log[:message]
+      end
     end
   end
 
