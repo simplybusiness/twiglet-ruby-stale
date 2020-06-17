@@ -3,6 +3,7 @@
 require 'logger'
 require 'time'
 require 'json'
+require 'twiglet/formatter'
 require_relative '../hash_extensions'
 
 module Twiglet
@@ -18,27 +19,15 @@ module Twiglet
       @service_name = service_name
       @now = now
       @output = output
-      @default_properties = default_properties
 
       raise 'Service name is mandatory' \
-        unless @service_name.is_a?(String) && !@service_name.strip.empty?
+        unless service_name.is_a?(String) && !service_name.strip.empty?
 
-      super(output)
+      formatter = Twiglet::Formatter.new(service_name, default_properties: default_properties, now: now)
+      super(output, formatter: formatter)
     end
 
-    def debug(message)
-      log(level: 'debug', message: message)
-    end
-
-    def info(message)
-      log(level: 'info', message: message)
-    end
-
-    def warning(message)
-      log(level: 'warn', message: message)
-    end
-
-    def error(message, error = nil)
+    def error(message, error = nil, &block)
       if error
         error_fields = {
           'error': {
@@ -46,14 +35,10 @@ module Twiglet
           }
         }
         add_stack_trace(error_fields, error)
-        message = message.merge(error_fields)
+        message.merge!(error_fields)
       end
 
-      log(level: 'error', message: message)
-    end
-
-    def critical(message)
-      log(level: 'fatal', message: message)
+      super(message, &block)
     end
 
     def with(default_properties)
@@ -63,53 +48,10 @@ module Twiglet
                  output: @output)
     end
 
-    alias_method :warn, :warning
-    alias_method :fatal, :critical
+    alias_method :warning, :warn
+    alias_method :critical, :fatal
 
     private
-
-    def log(level:, message:)
-      case message
-      when String
-        log_text(level, message: message)
-      when Hash
-        log_object(level, message: message)
-      else
-        raise('Message must be String or Hash')
-      end
-    end
-
-    def log_text(level, message:)
-      raise('The \'message\' property of log object must not be empty') if message.strip.empty?
-
-      message = { message: message }
-      log_message(level, message: message)
-    end
-
-    def log_object(level, message:)
-      message = message.transform_keys(&:to_sym)
-      message.key?(:message) || raise('Log object must have a \'message\' property')
-      message[:message].strip.empty? && raise('The \'message\' property of log object must not be empty')
-
-      log_message(level, message: message)
-    end
-
-    def log_message(level, message:)
-      base_message = {
-        "@timestamp": @now.call.iso8601(3),
-        service: {
-          name: @service_name
-        },
-        log: {
-          level: level
-        }
-      }
-
-      @output.puts base_message
-                       .deep_merge(@default_properties.to_nested)
-                       .deep_merge(message.to_nested)
-                       .to_json
-    end
 
     def add_stack_trace(hash_to_add_to, error)
       hash_to_add_to[:error][:stack_trace] = error.backtrace.join("\n") if error.backtrace
