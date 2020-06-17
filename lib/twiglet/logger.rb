@@ -33,7 +33,7 @@ module Twiglet
     end
 
     def warning(message)
-      log(level: 'warning', message: message)
+      log(level: 'warn', message: message)
     end
 
     def error(message, error = nil)
@@ -51,7 +51,7 @@ module Twiglet
     end
 
     def critical(message)
-      log(level: 'critical', message: message)
+      log(level: 'fatal', message: message)
     end
 
     def with(default_properties)

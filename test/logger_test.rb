@@ -15,10 +15,10 @@ describe Twiglet::Logger do
   LEVELS = [
     { method: :debug, level: 'debug' },
     { method: :info, level: 'info' },
-    { method: :warning, level: 'warning' },
-    { method: :warn, level: 'warning' },
-    { method: :critical, level: 'critical' },
-    { method: :fatal, level: 'critical' },
+    { method: :warning, level: 'warn' },
+    { method: :warn, level: 'warn' },
+    { method: :critical, level: 'fatal' },
+    { method: :fatal, level: 'fatal' },
     { method: :error, level: 'error' }
   ].freeze
 
