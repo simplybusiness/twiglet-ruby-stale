@@ -258,6 +258,32 @@ describe Twiglet::Logger do
     end
   end
 
+  describe 'logging with a block' do
+    LEVELS.each do |attrs|
+      it "should correctly log the block when calling #{attrs[:method]}" do
+        block = proc { 'a block log message' }
+        @logger.public_send(attrs[:method], &block)
+        actual_log = read_json(@buffer)
+
+        assert_equal attrs[:level], actual_log[:log][:level]
+        assert_equal 'a block log message', actual_log[:message]
+      end
+    end
+  end
+
+  describe 'logger level' do
+    [
+      { expression: :info, level: 1 },
+      { expression: 'Warn', level: 2 },
+      { expression: Logger::DEBUG, level: 0 }
+    ].each do |args|
+      it "sets the severity threshold to level #{args[:level]}" do
+        @logger.level = args[:expression]
+        assert_equal args[:level], @logger.level
+      end
+    end
+  end
+
   private
 
   def read_json(buffer)
