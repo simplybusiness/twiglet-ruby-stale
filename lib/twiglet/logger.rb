@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require 'logger'
 require 'time'
 require 'json'
 require_relative '../hash_extensions'
 
 module Twiglet
-  class Logger
+  class Logger < ::Logger
     Hash.include HashExtensions
 
     def initialize(
@@ -22,6 +23,7 @@ module Twiglet
       raise 'Service name is mandatory' \
         unless @service_name.is_a?(String) && !@service_name.strip.empty?
 
+      super(output)
     end
 
     def debug(message)
