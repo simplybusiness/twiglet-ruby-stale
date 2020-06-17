@@ -17,11 +17,11 @@ module Twiglet
       @service_name = service_name
       @now = now
       @output = output
+      @default_properties = default_properties
 
       raise 'Service name is mandatory' \
         unless @service_name.is_a?(String) && !@service_name.strip.empty?
 
-      @default_properties = default_properties
     end
 
     def debug(message)
@@ -35,8 +35,6 @@ module Twiglet
     def warning(message)
       log(level: 'warning', message: message)
     end
-
-    alias_method :warn, :warning
 
     def error(message, error = nil)
       if error
@@ -56,14 +54,15 @@ module Twiglet
       log(level: 'critical', message: message)
     end
 
-    alias_method :fatal, :critical
-
     def with(default_properties)
       Logger.new(@service_name,
                  default_properties: default_properties,
                  now: @now,
                  output: @output)
     end
+
+    alias_method :warn, :warning
+    alias_method :fatal, :critical
 
     private
 
