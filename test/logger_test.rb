@@ -15,16 +15,23 @@ describe Twiglet::Logger do
   LEVELS = [
     { method: :debug, level: 'debug' },
     { method: :info, level: 'info' },
-    { method: :warning, level: 'warning' },
-    { method: :warn, level: 'warning' },
-    { method: :critical, level: 'critical' },
-    { method: :fatal, level: 'critical' },
+    { method: :warning, level: 'warn' },
+    { method: :warn, level: 'warn' },
+    { method: :critical, level: 'fatal' },
+    { method: :fatal, level: 'fatal' },
     { method: :error, level: 'error' }
   ].freeze
 
   it 'should throw an error with an empty service name' do
     assert_raises RuntimeError do
       Twiglet::Logger.new('  ')
+    end
+  end
+
+  it 'conforms to the standard Ruby Logger API' do
+    [:debug, :debug?, :info, :info?, :warn, :warn?, :fatal, :fatal?, :error, :error?,
+     :level, :level=, :sev_threshold=].each do |call|
+      assert @logger.respond_to?(call), "Logger does not respond to #{call}"
     end
   end
 
@@ -254,6 +261,32 @@ describe Twiglet::Logger do
 
         assert_equal attrs[:level], actual_log[:log][:level]
         assert_equal 'a log message', actual_log[:message]
+      end
+    end
+  end
+
+  describe 'logging with a block' do
+    LEVELS.each do |attrs|
+      it "should correctly log the block when calling #{attrs[:method]}" do
+        block = proc { 'a block log message' }
+        @logger.public_send(attrs[:method], &block)
+        actual_log = read_json(@buffer)
+
+        assert_equal attrs[:level], actual_log[:log][:level]
+        assert_equal 'a block log message', actual_log[:message]
+      end
+    end
+  end
+
+  describe 'logger level' do
+    [
+      { expression: :info, level: 1 },
+      { expression: 'warn', level: 2 },
+      { expression: Logger::DEBUG, level: 0 }
+    ].each do |args|
+      it "sets the severity threshold to level #{args[:level]}" do
+        @logger.level = args[:expression]
+        assert_equal args[:level], @logger.level
       end
     end
   end
