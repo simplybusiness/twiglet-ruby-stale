@@ -274,7 +274,7 @@ describe Twiglet::Logger do
   describe 'logger level' do
     [
       { expression: :info, level: 1 },
-      { expression: 'Warn', level: 2 },
+      { expression: 'warn', level: 2 },
       { expression: Logger::DEBUG, level: 0 }
     ].each do |args|
       it "sets the severity threshold to level #{args[:level]}" do
