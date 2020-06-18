@@ -28,6 +28,13 @@ describe Twiglet::Logger do
     end
   end
 
+  it 'conforms to the standard Ruby Logger API' do
+    [:debug, :debug?, :info, :info?, :warn, :warn?, :fatal, :fatal?, :error, :error?,
+     :level, :level=, :sev_threshold=].each do |call|
+      assert @logger.respond_to?(call), "Logger does not respond to #{call}"
+    end
+  end
+
   describe 'JSON logging' do
     it 'should throw an error with an empty message' do
       assert_raises RuntimeError do
