@@ -3,7 +3,7 @@
 require 'logger'
 require 'time'
 require 'json'
-require 'twiglet/formatter'
+require_relative 'formatter'
 require_relative '../hash_extensions'
 
 module Twiglet
