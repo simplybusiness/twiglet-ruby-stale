@@ -31,5 +31,5 @@ jobs:
       run: bundle exec rake test
       shell: bash
     - name: Run example_app
-      run: ruby example_app.rb
+      run: bundle exec ruby example_app.rb
       shell: bash
