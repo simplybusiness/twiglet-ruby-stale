@@ -63,6 +63,7 @@ module Twiglet
         .deep_merge(@default_properties.to_nested)
         .deep_merge(message.to_nested)
         .to_json
+        .concat("\n")
     end
   end
 end
