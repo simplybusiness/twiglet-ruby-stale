@@ -136,9 +136,11 @@ describe Twiglet::Logger do
       @logger.info({message: 'there'})
 
       expected_output =
-        '{"@timestamp":"2020-05-11T15:01:01.000Z","service":{"name":"petshop"},"log":{"level":"debug"},"message":"hi"}'\
+        '{"@timestamp":"2020-05-11T15:01:01.000Z",'\
+        '"service":{"name":"petshop"},"log":{"level":"debug"},"message":"hi"}'\
         "\n"\
-        '{"@timestamp":"2020-05-11T15:01:01.000Z","service":{"name":"petshop"},"log":{"level":"info"},"message":"there"}'\
+        '{"@timestamp":"2020-05-11T15:01:01.000Z",'\
+        '"service":{"name":"petshop"},"log":{"level":"info"},"message":"there"}'\
         "\n"\
 
       assert_equal expected_output, @buffer.string
