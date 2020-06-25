@@ -3,6 +3,7 @@
 require 'minitest/autorun'
 require_relative '../lib/twiglet/logger'
 
+# rubocop:disable Metrics/BlockLength
 describe Twiglet::Logger do
   before do
     @now = -> { Time.utc(2020, 5, 11, 15, 1, 1) }
@@ -311,3 +312,4 @@ describe Twiglet::Logger do
     JSON.parse(buffer.read, symbolize_names: true)
   end
 end
+# rubocop:enable Metrics/BlockLength
