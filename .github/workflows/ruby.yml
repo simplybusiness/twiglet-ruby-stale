@@ -3,8 +3,6 @@ name: Ruby CI
 on:
   push:
     branches:
-      - '*'         # matches every branch
-      - '*/*'       # matches every branch containing a single '/'
 
 jobs:
   build:
