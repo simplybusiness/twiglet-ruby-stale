@@ -130,6 +130,18 @@ describe Twiglet::Logger do
       assert_equal 'Guinea pigs arrived', log[:message]
     end
 
+    it "should log multiple messages properly" do
+      @logger.debug({message: 'hi'})
+      @logger.info({message: 'there'})
+
+      expected_output =
+        '{"@timestamp":"2020-05-11T15:01:01.000Z","service":{"name":"petshop"},"log":{"level":"debug"},"message":"hi"}'\
+        "\n"\
+        '{"@timestamp":"2020-05-11T15:01:01.000Z","service":{"name":"petshop"},"log":{"level":"info"},"message":"there"}'
+
+      assert_equal expected_output, @buffer.string
+    end
+
     it 'should be able to convert dotted keys to nested objects' do
       @logger.debug({
                       "trace.id": '1c8a5fb2-fecd-44d8-92a4-449eb2ce4dcb',
