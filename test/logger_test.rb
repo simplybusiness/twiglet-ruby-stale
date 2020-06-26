@@ -307,7 +307,7 @@ describe Twiglet::Logger do
     end
 
     it 'initializes the logger with the provided level' do
-      assert_equal 2, Twiglet::Logger.new('petshop', level: :warn).level
+      assert_equal Logger::WARN, Twiglet::Logger.new('petshop', level: :warn).level
     end
   end
 
