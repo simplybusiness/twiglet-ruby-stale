@@ -14,17 +14,19 @@ module Twiglet
       service_name,
       default_properties: {},
       now: -> { Time.now.utc },
-      output: $stdout
+      output: $stdout,
+      level: Logger::DEBUG
     )
       @service_name = service_name
       @now = now
       @output = output
+      @level = level
 
       raise 'Service name is mandatory' \
         unless service_name.is_a?(String) && !service_name.strip.empty?
 
       formatter = Twiglet::Formatter.new(service_name, default_properties: default_properties, now: now)
-      super(output, formatter: formatter)
+      super(output, formatter: formatter, level: level)
     end
 
     def error(message = {}, error = nil, &block)
@@ -45,7 +47,8 @@ module Twiglet
       Logger.new(@service_name,
                  default_properties: default_properties,
                  now: @now,
-                 output: @output)
+                 output: @output,
+                 level: @level)
     end
 
     alias_method :warning, :warn
